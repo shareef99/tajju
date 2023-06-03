@@ -1,20 +1,8 @@
-"use client";
-
 import Link from "next/link";
 
 export default function Home() {
-  const surprise = localStorage.getItem("surprise") as
-    | "true"
-    | "false"
-    | "worst"
-    | null;
-
   return (
-    <main
-      className={`bg-p-green h-screen container w-screen flex flex-col justify-center items-center ${
-        surprise === "worst" && "bg-black"
-      }`}
-    >
+    <main className="bg-p-green h-screen container w-screen flex flex-col justify-center items-center">
       <h1 className="font-sacramento text-5xl text-center">
         Happy Birthday Tajju!
       </h1>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Page() {
   // Constants
@@ -29,30 +29,36 @@ export default function Page() {
     },
   ];
   const worstWrongAnswer = "mujtaba";
-  const surprise = localStorage.getItem("surprise") as
-    | "true"
-    | "false"
-    | "worst"
-    | null;
 
   // State
   const [answer, setAnswer] = useState<string>("");
+  const [surprise, setSurprise] = useState<"true" | "false" | "worst" | null>(
+    null
+  );
+
+  // Effects
+  useEffect(() => {
+    const surprise = localStorage.getItem("surprise") as
+      | "true"
+      | "false"
+      | "worst"
+      | null;
+
+    setSurprise(surprise);
+  }, []);
 
   // Functions
   function answerHandler() {
-    if (surprise === "worst") {
-      return;
-    }
-
     const formattedAnswer = answer.trim().toLowerCase();
 
-    if (!answer) {
+    if (!answer && !(surprise === "worst")) {
       alert("Enter the name of your best friend first");
       return;
     }
 
     if (formattedAnswer === correctAnswer) {
       localStorage.setItem("surprise", "true");
+      setSurprise("true");
       return;
     }
 
@@ -60,6 +66,7 @@ export default function Page() {
 
     if (formattedAnswer === worstWrongAnswer) {
       localStorage.setItem("surprise", "worst");
+      setSurprise("worst");
       return;
     }
 
@@ -102,43 +109,29 @@ export default function Page() {
     );
   }
 
+  if (surprise === "worst") {
+    return <main className="bg-black h-screen w-screen"></main>;
+  }
+
   return (
-    <main
-      className={`bg-p-green h-screen container w-screen flex flex-col justify-center items-center ${
-        surprise === "worst" && "bg-black"
-      }`}
-    >
-      <h1
-        className={`text-3xl text-justify ${
-          surprise === "worst" && "text-black"
-        }`}
-      >
+    <main className="bg-p-green h-screen container w-screen flex flex-col justify-center items-center">
+      <h1 className="text-3xl text-justify">
         Wait bro, First you have to enter the name of your best friend
       </h1>
-      <h1
-        className={`text-3xl text-justify mt-4 ${
-          surprise === "worst" && "text-black"
-        }`}
-      >
+      <h1 className="text-3xl text-justify mt-4">
         The answer will determine whether you are worthy of the surprise or not
       </h1>
 
       <div className="mt-8">
         <input
           type="text"
-          className={`bg-p-orange w-full text-p-blue text-3xl mt-8 px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out 
-            ${surprise === "worst" && "bg-black text-black"}
-          `}
+          className="bg-p-orange w-full text-p-blue text-3xl mt-8 px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out"
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
-          disabled={surprise === "worst"}
         />
         <button
-          className={`bg-p-blue text-p-green text-3xl mt-8 px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out
-            ${surprise === "worst" && "bg-black text-black"}
-          `}
+          className="bg-p-blue text-p-green text-3xl mt-8 px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out"
           onClick={answerHandler}
-          disabled={surprise === "worst"}
         >
           Check out the Surprise
         </button>
